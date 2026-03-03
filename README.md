@@ -1,3 +1,43 @@
+# StagePass
+
+## Team
+- **Team Name:** StagePass
+- **Members:**
+  - Seniuc Andrei - Event management
+  - Ionescu Dumitru Andrei - Ticket tiers and inventory
+  - Ditoiu Stefan Teodor - Orders and check-in
+
+## Project Description
+
+StagePass is a RESTful backend application built with Spring Boot that powers a ticket selling platform for events. It allows organizers to publish events, define ticket tiers with dynamic pricing, and manage venue capacity.
+
+Attendees can browse events, purchase tickets across different tiers, and get checked in at the door. The application enforces business rules such as preventing overselling and blocking duplicate check-ins.
+
+The application is split into three independent modules: event management, pricing and inventory, and orders and check-in.
+
+### Key Features
+- **Event Management** - Create and manage events with dates, locations, categories and publishing status
+- **Ticket Tiers** - Define multiple tiers per event (VIP, Early Bird, General) with stock and pricing
+- **Orders** - Purchase tickets with automatic stock validation to prevent overselling
+- **Check-in** - Mark tickets as used at the door with duplicate check-in prevention
+
+### Technical Stack
+- **Backend:** Spring Boot (Java 21)
+- **Database:** MongoDB
+- **API:** RESTful
+- **Testing:** JUnit, Mockito, Cucumber
+- **Monitoring:** Prometheus, Grafana
+- **Deployment:** Docker
+
+## Contributing
+
+All team members follow trunk-based development:
+1. Create feature branch from `main`
+2. Make changes and commit with clear messages
+3. Create PR and request review
+4. Address feedback
+5. Merge after approval
+
 # Prerequisites
 
 For using Github Codespaces, no prerequisites are mandatory.
