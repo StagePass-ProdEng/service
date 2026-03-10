@@ -98,3 +98,50 @@ DELETE http://localhost:8080/api/todos/{{createTodo.response.body.id}}
 
 ### Delete user
 DELETE http://localhost:8080/api/users/{{createUser.response.body.id}}
+
+# ==========================================
+# Event Controller Endpoints
+# ==========================================
+
+### Get all events
+GET http://localhost:8080/api/events
+
+### Create a new event (run this to populate variables)
+# @name createEvent
+POST http://localhost:8080/api/events
+Content-Type: application/json
+
+{
+    "name": "Summer Tech Conference 2026",
+    "date": "2026-08-15T09:00:00Z",
+    "location": "Bucharest Arena",
+    "category": "Technology",
+    "published": false
+}
+
+### Get event by ID (uses ID from createEvent response)
+GET http://localhost:8080/api/events/{{createEvent.response.body.id}}
+
+### Get events by category (or location)
+GET http://localhost:8080/api/events?category=Technology
+
+### Update entire event (PUT)
+PUT http://localhost:8080/api/events/{{createEvent.response.body.id}}
+Content-Type: application/json
+
+{
+    "name": "Summer Tech Conference 2026",
+    "date": "2026-08-15T09:00:00Z",
+    "location": "Bucharest Arena - Main Hall",
+    "category": "Technology",
+    "published": false
+}
+
+### Change event publishing status (PATCH)
+PATCH http://localhost:8080/api/events/{{createEvent.response.body.id}}/publish
+Content-Type: application/json
+
+true
+
+### Delete event
+DELETE http://localhost:8080/api/events/{{createEvent.response.body.id}}
