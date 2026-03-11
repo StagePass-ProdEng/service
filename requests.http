@@ -145,3 +145,63 @@ true
 
 ### Delete event
 DELETE http://localhost:8080/api/events/{{createEvent.response.body.id}}
+
+### ==========================================
+### TEST 1: Create a Ticket Tier 
+### ==========================================
+# @name createTier
+POST http://localhost:8080/api/ticket-tiers
+Content-Type: application/json
+
+{
+  "eventId": "SUMMER-FEST-2026",
+  "name": "VIP",
+  "price": 100.0,
+  "capacity": 50
+}
+
+### -> COPY the "id" from the response of this request
+
+### ==========================================
+### TEST 2: Place an Order 
+### ==========================================
+# @name placeOrder
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "eventId": "SUMMER-FEST-2026",
+  "tierId": "69b0cbf138abce183a569528",
+  "userId": "user-andrei-1234"
+}
+
+### -> COPY the "ticketId" from the response we will use it for Check-in.
+
+
+### ==========================================
+### TEST 3: Place an Order Again 
+### Run the exact same request from Test 2 again.
+### You should get a 500/400 error saying: "You already have a ticket for this tier."
+### ==========================================
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "eventId": "SUMMER-FEST-2026",
+  "tierId": "69b0cb1238abce183a569522",
+  "userId": "user-andrei-123"
+}
+
+
+### ==========================================
+### TEST 4: Check-in at the door 
+### ==========================================
+POST http://localhost:8080/api/checkin/69b0cc0138abce183a56952a
+
+
+### ==========================================
+### TEST 5: Duplicate Check-in 
+### Run Test 4 again
+### You should get a 400 Bad Request: "Duplicate check-in! Ticket was already used at [Time]"
+### ==========================================
+POST http://localhost:8080/api/checkin/69b0cc0138abce183a56952a
