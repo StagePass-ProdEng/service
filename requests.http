@@ -205,3 +205,44 @@ POST http://localhost:8080/api/checkin/69b0cc0138abce183a56952a
 ### You should get a 400 Bad Request: "Duplicate check-in! Ticket was already used at [Time]"
 ### ==========================================
 POST http://localhost:8080/api/checkin/69b0cc0138abce183a56952a
+
+
+
+
+
+
+
+
+
+### TIER REQUESTS - using mock event
+
+### 1. Create a new Tier 
+POST http://localhost:8080/api/tiers
+Content-Type: application/json
+
+{
+  "eventId": "event_rock_2026",
+  "tierName": "VIP",
+  "capacity": 50,
+  "price": 500.00
+}
+
+### Copy the id and paste below to save it
+### -> 69b94e5665a376120b29b832
+
+
+### 2. List tiers from event, take the id from the event above
+GET http://localhost:8080/api/tiers/event/event_rock_2026
+
+
+### 3. Change the capacity using id from 1.
+PATCH http://localhost:8080/api/tiers/69b94e5665a376120b29b832/capacity?newCapacity=100
+
+
+
+### 4. Try changing the tier capacity to a lower value than sold tickets
+PATCH http://localhost:8080/api/tiers/69b94e5665a376120b29b832/capacity?newCapacity=1
+
+
+### 5. Delete the tier
+DELETE http://localhost:8080/api/tiers/69b94e5665a376120b29b832
