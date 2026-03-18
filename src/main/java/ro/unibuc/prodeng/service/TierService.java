@@ -35,14 +35,15 @@ public class TierService {
         return repository.save(tier);
     }
 
-    public void consumeStock(String tierId, int quantityToBuy){
-        Tier tier=repository.findById(tierId).orElseThrow(()->new RuntimeException("Tier not found"));
+    public void consumeStock(String tierId, int quantityToBuy) {
+        Tier tier = repository.findById(tierId)
+                .orElseThrow(() -> new RuntimeException("Tier not found with ID: " + tierId));
 
-        if(!tier.hasAvailableTickets(quantityToBuy)){
-            throw new RuntimeException("Tier "+tier.getTierName()+" is sold out!");
+        if (!tier.hasAvailableTickets(quantityToBuy)) {
+            throw new RuntimeException("Tier " + tier.getTierName() + " is sold out!");
         }
 
-        tier.setSold(tier.getSold()+quantityToBuy);
+        tier.setSold(tier.getSold() + quantityToBuy);
         repository.save(tier);
     }
 
