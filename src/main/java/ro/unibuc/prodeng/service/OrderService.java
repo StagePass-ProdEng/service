@@ -10,6 +10,7 @@ import ro.unibuc.prodeng.repository.TicketRepository;
 import ro.unibuc.prodeng.request.OrderRequest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -65,5 +66,22 @@ public class OrderService {
         ticket.setCheckedIn(true);
         ticket.setCheckInTime(LocalDateTime.now());
         return ticketRepository.save(ticket);
+    }
+
+
+    public List<Order> getOrdersByUser(String userId) {
+        return orderRepository.findByUserId(userId);
+    }
+
+    public long getCheckedInCountForEvent(String eventId) {
+        List<Order> orders = orderRepository.findByEventId(eventId);
+        long count = 0;
+        for (Order order : orders) {
+            Ticket ticket = ticketRepository.findById(order.getTicketId()).orElse(null);
+            if (ticket != null && ticket.isCheckedIn()) {
+                count++;
+            }
+        }
+        return count;
     }
 }

@@ -255,7 +255,7 @@ POST http://localhost:8080/api/events
 Content-Type: application/json
 
 {
-  "name": "Summer Concert",
+  "name": "Summer-Concert",
   "location": "Central Park",
   "category": "Music"
 }
@@ -266,7 +266,7 @@ POST http://localhost:8080/api/tiers
 Content-Type: application/json
 
 {
-  "eventId": "69ba62fb6079347cab005a5b",
+  "eventId": "69ba6c9807e30f401954a25a",
   "tierName": "VIP",
   "capacity": 10,
   "price": 100.0
@@ -277,12 +277,18 @@ POST http://localhost:8080/api/orders
 Content-Type: application/json
 
 {
-  "eventId": "69ba62fb6079347cab005a5b",
-  "tierId": "69ba63186079347cab005a5c",
+  "eventId": "69ba6c9807e30f401954a25a",
+  "tierId": "69ba6ca607e30f401954a25b",
   "userId": "user-123"
 }
 ###
-POST http://localhost:8080/api/checkin/69ba641b6079347cab005a70
+POST http://localhost:8080/api/checkin/69ba6cb507e30f401954a25d
 
-### Get all tiers for your event to see the "sold" count increase
-GET http://localhost:8080/api/tiers/event/69ba62fb6079347cab005a5b
+### 
+GET http://localhost:8080/api/tiers/event/69ba687d72ffbc202c85bb29
+
+###
+GET http://localhost:8080/api/orders/user/user-123
+
+###
+GET http://localhost:8080/api/orders/event/69ba6c9807e30f401954a25a/status
