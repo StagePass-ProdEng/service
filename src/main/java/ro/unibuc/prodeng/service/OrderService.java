@@ -28,10 +28,8 @@ public class OrderService {
 
     @Transactional
     public Order placeOrder(OrderRequest request) {
- 
-        //ticketTierService.reserveTicket(request.tierId(), request.userId());
+        ticketTierService.consumeStock(request.tierId(), 1);
 
-        // Create the Order
         Order order = new Order();
         order.setEventId(request.eventId());
         order.setTierId(request.tierId());
@@ -39,7 +37,7 @@ public class OrderService {
         order.setOrderDate(LocalDateTime.now());
         order = orderRepository.save(order);
 
-        // Generate the Ticket for check-in
+      
         Ticket ticket = new Ticket();
         ticket.setOrderId(order.getId());
         ticket.setEventId(request.eventId());
