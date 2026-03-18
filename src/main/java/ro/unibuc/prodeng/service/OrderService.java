@@ -16,11 +16,11 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final TicketRepository ticketRepository;
-    private final TicketTierService ticketTierService; 
+    private final TierService ticketTierService; 
 
     public OrderService(OrderRepository orderRepository, 
                         TicketRepository ticketRepository,
-                        TicketTierService ticketTierService) {
+                        TierService ticketTierService) {
         this.orderRepository = orderRepository;
         this.ticketRepository = ticketRepository;
         this.ticketTierService = ticketTierService;
@@ -29,7 +29,7 @@ public class OrderService {
     @Transactional
     public Order placeOrder(OrderRequest request) {
  
-        ticketTierService.reserveTicket(request.tierId(), request.userId());
+        //ticketTierService.reserveTicket(request.tierId(), request.userId());
 
         // Create the Order
         Order order = new Order();

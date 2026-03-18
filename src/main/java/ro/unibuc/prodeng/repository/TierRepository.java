@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import ro.unibuc.prodeng.model.TicketTier;
+import ro.unibuc.prodeng.model.Tier;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 
 @Repository
-public interface TicketTierRepository extends MongoRepository<TicketTier,String>{
+public interface TierRepository extends MongoRepository<Tier,String>{
 
-    List<TicketTier> findByEventId(String eventId);
+    List<Tier> findByEventId(String eventId);
 }
