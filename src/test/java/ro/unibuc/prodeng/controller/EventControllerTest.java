@@ -38,7 +38,6 @@ class EventControllerTest {
 
     @BeforeEach
     void setUp() {
-        // This is the magic line that bypasses the Spring Context and the UserService error!
         mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
     }
 
