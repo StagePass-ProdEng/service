@@ -72,6 +72,21 @@ class OrderServiceTest {
     }
 
     @Test
+    void testCheckInTicket_branchCoverage_successPath() {
+        // Arrange
+        Ticket ticket = new Ticket();
+        ticket.setCheckedIn(false); 
+        when(ticketRepository.findById("t1")).thenReturn(Optional.of(ticket));
+        when(ticketRepository.save(any())).thenReturn(ticket);
+
+        // Act
+        orderService.checkInTicket("t1");
+
+        // Assert
+        assertTrue(ticket.isCheckedIn());
+    }
+
+    @Test
     void testCheckInTicket_alreadyCheckedIn_throwsException() {
         // Arrange
         Ticket ticket = new Ticket();
@@ -97,18 +112,22 @@ class OrderServiceTest {
 
     @Test
     void testGetCheckedInCountForEvent_returnsCorrectCount() {
-        // Arrange
+         // Arrange
         Order o1 = new Order(); o1.setTicketId("t1");
-        Ticket t1 = new Ticket(); t1.setCheckedIn(true);
+        Order o2 = new Order(); o2.setTicketId("t2");
         
-        when(orderRepository.findByEventId("e1")).thenReturn(List.of(o1));
+        Ticket t1 = new Ticket(); t1.setCheckedIn(true); // Branch: true
+        Ticket t2 = new Ticket(); t2.setCheckedIn(false); // Branch: false
+        
+        when(orderRepository.findByEventId("e1")).thenReturn(List.of(o1, o2));
         when(ticketRepository.findById("t1")).thenReturn(Optional.of(t1));
+        when(ticketRepository.findById("t2")).thenReturn(Optional.of(t2));
         
         // Act
         long count = orderService.getCheckedInCountForEvent("e1");
         
         // Assert
-        assertEquals(1, count);
+        assertEquals(1, count); // Only 1 should be counted
     }
 
     @Test
@@ -118,6 +137,18 @@ class OrderServiceTest {
         
         // Act & Assert
         assertThrows(TicketCheckInException.class, () -> orderService.checkInTicket("t99"));
+    }
+
+    @Test
+    void testCheckInTicket_nullId_throwsException() {
+        // Act & Assert
+        assertThrows(TicketCheckInException.class, () -> orderService.checkInTicket(null));
+    }
+
+    @Test
+    void testCheckInTicket_blankId_throwsException() {
+        // Act & Assert
+        assertThrows(TicketCheckInException.class, () -> orderService.checkInTicket("   "));
     }
     
 }
