@@ -44,7 +44,7 @@ public class EventControllerIT extends IntegrationTestBase {
             }
             """;
 
-        // Act
+        // 2. Act 
         mockMvc.perform(post("/api/events")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(eventPayload))
