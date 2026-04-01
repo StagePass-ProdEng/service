@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -70,5 +71,39 @@ class TierControllerIntegrationTest extends IntegrationTestBase {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].tierName").value("VIP"))
                 .andExpect(jsonPath("$[0].capacity").value(100));
+    }
+
+    @Test
+    void testUpdateCapacity_existingTier_updatesInDatabase() throws Exception {
+        Tier tier = new Tier();
+        tier.setEventId("event-300");
+        tier.setTierName("Standard");
+        tier.setCapacity(100);
+        tier.setPrice(new BigDecimal("50.00"));
+        Tier saved = tierRepository.save(tier);
+
+        mockMvc.perform(patch("/api/tiers/" + saved.getId() + "/capacity")
+                        .param("newCapacity", "250"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.capacity").value(250));
+
+        Tier updated = tierRepository.findById(saved.getId()).orElseThrow();
+        assertEquals(250, updated.getCapacity());
+    }
+
+    @Test
+    void testDeleteTier_existingTier_removesFromDatabase() throws Exception {
+        Tier tier = new Tier();
+        tier.setEventId("event-400");
+        tier.setTierName("To Be Deleted");
+        tier.setCapacity(50);
+        tier.setPrice(new BigDecimal("20.00"));
+        Tier saved = tierRepository.save(tier);
+
+        mockMvc.perform(delete("/api/tiers/" + saved.getId()))
+                .andExpect(status().isOk());
+
+        assertTrue(tierRepository.findById(saved.getId()).isEmpty());
+        assertEquals(0, tierRepository.count());
     }
 }
