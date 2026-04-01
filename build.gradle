@@ -23,8 +23,8 @@ ext {
 
 dependencies {
 	def cucumberVersion = "7.20.1"
-	def junitVersion = "5.11.4"
-	def testcontainersVersion = "2.0.3"
+    def junitVersion = "5.11.4"
+    def testcontainersVersion = "2.0.3" 
 
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
