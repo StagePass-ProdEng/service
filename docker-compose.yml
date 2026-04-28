@@ -91,10 +91,6 @@ services:
       - "--storage.tsdb.path=/etc/prometheus/durable"
     ports:
       - 9090:9090
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
     profiles:
       - "monitoring"
   alertmanager: # alert manager (prometheus)
@@ -104,10 +100,6 @@ services:
     command: --config.file=/config/alertmanager.yml --log.level=debug
     ports:
       - "9093:9093"
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
     profiles:
       - "monitoring"
   grafana: # dashboard visualisation tool (metrics & logs)
@@ -128,17 +120,9 @@ services:
     profiles:
       - "perf"
     command: wrk -t4 -c10 -d300s http://prod-eng:8080/api/users
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
 
   wrk-injector-info-perf: # traffic injector (high)
     image: mtchavez/docker-wrk
     profiles:
       - "perf"
     command: wrk -t4 -c1000 -d5m --timeout 1s --latency http://prod-eng:8080/info
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"

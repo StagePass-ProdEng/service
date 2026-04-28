@@ -1,9 +1,11 @@
 package ro.unibuc.prodeng.service;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.springframework.stereotype.Service;
 
+import ro.unibuc.prodeng.monitoring.MonitoringMetricsService;
 import ro.unibuc.prodeng.model.Tier;
 import ro.unibuc.prodeng.repository.TierRepository;
 
@@ -11,51 +13,71 @@ import ro.unibuc.prodeng.repository.TierRepository;
 public class TierService {
 
     private final TierRepository repository;
+    private final MonitoringMetricsService metrics;
 
-    public TierService(TierRepository repository) {
+    public TierService(TierRepository repository, MonitoringMetricsService metrics) {
         this.repository = repository;
+        this.metrics = metrics;
+    }
+
+    private <T> T withDbMetrics(Supplier<T> operation) {
+        return metrics == null ? operation.get() : metrics.recordDbOperation(operation);
+    }
+
+    private void withDbMetrics(Runnable operation) {
+        if (metrics == null) {
+            operation.run();
+            return;
+        }
+        metrics.recordDbOperation(operation);
     }
 
     public Tier createTier(Tier tier) {
-        return repository.save(tier);
+        return withDbMetrics(() -> repository.save(tier));
     }
 
     public List<Tier> getTiersByEvent(String eventId) {
-        return repository.findByEventId(eventId);
+        return withDbMetrics(() -> repository.findByEventId(eventId));
     }
 
     public Tier updateTierCapacity(String id, Integer newCapacity) {
-        Tier tier = repository.findById(id).orElseThrow(() -> new RuntimeException("Tier not found"));
-        
-        if (newCapacity < tier.getSold()) {
-            throw new RuntimeException("New capacity can't be smaller than currently sold: " + tier.getSold());
-        }
-        
-        tier.setCapacity(newCapacity);
-        return repository.save(tier);
+        return withDbMetrics(() -> {
+            Tier tier = repository.findById(id).orElseThrow(() -> new RuntimeException("Tier not found"));
+
+            if (newCapacity < tier.getSold()) {
+                throw new RuntimeException("New capacity can't be smaller than currently sold: " + tier.getSold());
+            }
+
+            tier.setCapacity(newCapacity);
+            return repository.save(tier);
+        });
     }
 
     public void consumeStock(String tierId, int quantityToBuy) {
-        Tier tier = repository.findById(tierId)
-                .orElseThrow(() -> new RuntimeException("Tier not found with ID: " + tierId));
+        withDbMetrics(() -> {
+            Tier tier = repository.findById(tierId)
+                    .orElseThrow(() -> new RuntimeException("Tier not found with ID: " + tierId));
 
-        if (!tier.hasAvailableTickets(quantityToBuy)) {
-            throw new RuntimeException("Tier " + tier.getTierName() + " is sold out!");
-        }
+            if (!tier.hasAvailableTickets(quantityToBuy)) {
+                throw new RuntimeException("Tier " + tier.getTierName() + " is sold out!");
+            }
 
-        tier.setSold(tier.getSold() + quantityToBuy);
-        repository.save(tier);
+            tier.setSold(tier.getSold() + quantityToBuy);
+            repository.save(tier);
+        });
     }
 
     public void deleteTier(String id) {
-        Tier tier = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tier not found"));
+        withDbMetrics(() -> {
+            Tier tier = repository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Tier not found"));
 
-        if (tier.getSold() > 0) {
-            throw new RuntimeException("You can't delete the tier because there are sold tickets already!");
-        }
+            if (tier.getSold() > 0) {
+                throw new RuntimeException("You can't delete the tier because there are sold tickets already!");
+            }
 
-        repository.deleteById(id);
+            repository.deleteById(id);
+        });
     }
     
 }
